@@ -4,12 +4,8 @@ import pandas as pd
 from scipy.optimize import linprog
 import plotly.express as px
 import plotly.graph_objects as go
-from plotly.subplots import make_subplots
 from fpdf import FPDF
-import json
-import os
-import hashlib
-from datetime import datetime, timedelta
+from datetime import datetime
 
 # --- 1. CONFIGURACIÓN DE PÁGINA Y DISEÑO SaaS (CALIBRI & UI/UX ULTRA V4.0) ---
 st.set_page_config(
@@ -127,171 +123,14 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# --- 2. GESTIÓN DE MULTI-USUARIOS Y PERSISTENCIA ---
-USERS_FILE = "usuarios_nutrion_ultra_v4.json"
-
-def hash_password(password):
-    return hashlib.sha256(password.encode()).hexdigest()
-
-def cargar_usuarios_persistentes():
-    if os.path.exists(USERS_FILE):
-        try:
-            with open(USERS_FILE, "r") as f:
-                return json.load(f)
-        except Exception:
-            pass
-    default_users = {
-        "admin": {
-            "password": hash_password("1234"),
-            "email": "admin@nutrionultra.com",
-            "subscription_active": True,
-            "plan": "Anual Ultra AI & IoT (12 Meses)",
-            "auto_renew": True,
-            "next_renewal_date": (datetime.now() + timedelta(days=365)).strftime("%Y-%m-%d"),
-            "fecha_registro": "2026-01-01"
-        },
-        "alejandro": {
-            "password": hash_password("elite360"),
-            "email": "alejandro.castaneda@nutrionultra.com",
-            "subscription_active": True,
-            "plan": "Anual Ultra AI & IoT (12 Meses)",
-            "auto_renew": True,
-            "next_renewal_date": (datetime.now() + timedelta(days=365)).strftime("%Y-%m-%d"),
-            "fecha_registro": "2026-01-01"
-        }
-    }
-    guardar_usuarios_persistentes(default_users)
-    return default_users
-
-def guardar_usuarios_persistentes(usuarios_dict):
-    with open(USERS_FILE, "w") as f:
-        json.dump(usuarios_dict, f, indent=4)
-
-if "authenticated" not in st.session_state:
-    st.session_state.authenticated = False
-
-if "current_user" not in st.session_state:
-    st.session_state.current_user = ""
-
+# --- 2. INICIALIZACIÓN DE ESTADOS DE CHAT ---
 if "nutrion_hereford_messages" not in st.session_state:
     st.session_state.nutrion_hereford_messages = [
         {"role": "assistant", "content": "¡Hola! Soy **NutriON 360 ULTRA V4.0**, tu asistente virtual especializado en genética Hereford, finanzas empresariales y nutrición de precisión. ¿Cómo podemos optimizar la rentabilidad y ganancias de tu hato hoy?"}
     ]
 
-# --- PANTALLA DE ACCESO / SUSCRIPCIÓN SI NO ESTÁ AUTENTICADO ---
-if not st.session_state.authenticated:
-    st.markdown("""
-        <div style="text-align: center; padding: 22px; background: linear-gradient(135deg, #7c2d12 0%, #9a3412 100%); border-radius: 20px; color: white; margin-bottom: 20px; margin-top: 20px; box-shadow: 0 12px 30px rgba(122, 45, 18, 0.35);">
-            <div style="font-size: 3.5rem; margin-bottom: 5px;">🐂🥩</div>
-            <h2 style="margin: 0; font-size: 1.8rem; font-weight: 800; letter-spacing: -0.5px; color: #ffffff !important;">
-                NutriON 360 <span style="background: #fbbf24; color: #7c2d12; padding: 2px 8px; border-radius: 6px; font-size: 0.6em; vertical-align: middle;">ULTRA V4.0 • BECERRO HEREFORD</span>
-            </h2>
-            <p style="font-size: 0.95rem; margin-top: 8px; font-style: italic; color: #fef3c7 !important; font-weight: 600;">
-                "Tecnolog-IA en tus manos: Genética Hereford y nutrición de precisión para maximizar tus ganancias."
-            </p>
-            <hr style="border: 0.5px solid rgba(255,255,255,0.2); margin: 12px auto; width: 80%;">
-            <p style="font-size: 0.85rem; margin: 0; color: #ffffff !important; font-weight: 600;">
-                Aplicación creada y desarrollada por el <b>Nutriólogo Veterinario Alejandro Castañeda Correa</b>
-            </p>
-        </div>
-    """, unsafe_allow_html=True)
-
-    tab_login, tab_register = st.tabs(["🔑 Iniciar Sesión", "💳 Planes & Registro Empresarial"])
-
-    with tab_login:
-        st.markdown("### Acceso con Usuario y Contraseña")
-        user_input = st.text_input("Nombre de Usuario", key="login_user_hereford")
-        pass_input = st.text_input("Contraseña", type="password", key="login_pass_hereford")
-        
-        st.markdown("")
-        if st.button("Entrar a la Plataforma ULTRA V4.0", use_container_width=True):
-            db_usuarios = cargar_usuarios_persistentes()
-            hashed_pass = hash_password(pass_input)
-            
-            if user_input in db_usuarios and db_usuarios[user_input]["password"] == hashed_pass:
-                if db_usuarios[user_input].get("subscription_active", False):
-                    st.session_state.authenticated = True
-                    st.session_state.current_user = user_input
-                    st.success(f"¡Bienvenido de nuevo, {user_input}!")
-                    st.rerun()
-                else:
-                    st.error("Tu suscripción empresarial se encuentra inactiva.")
-            else:
-                st.error("Usuario o contraseña incorrectos.")
-
-    with tab_register:
-        st.markdown("### 🌟 Selección de Plan ULTRA V4.0 Hereford")
-        plan_elegido = st.radio(
-            "Planes de Licenciamiento NutriON:",
-            [
-                "Trimestral Racho Pro (3 Meses) - $3,600 MXN",
-                "Semestral Empresa Ganadera (6 Meses) - $6,500 MXN",
-                "Anual Ultra AI & IoT (12 Meses) - $9,600 MXN (Acceso Total)"
-            ],
-            index=2
-        )
-        
-        st.markdown("---")
-        col_r1, col_r2 = st.columns(2)
-        with col_r1:
-            new_user = st.text_input("Nombre de Usuario Deseado", key="reg_user_h")
-            new_email = st.text_input("Correo Electrónico", key="reg_email_h")
-        with col_r2:
-            new_pass = st.text_input("Contraseña", type="password", key="reg_pass_h")
-            confirm_pass = st.text_input("Confirma Contraseña", type="password", key="reg_conf_h")
-        
-        col_p1, col_p2, col_p3 = st.columns([2, 1, 1])
-        with col_p1:
-            num_tarjeta = st.text_input("Número de Tarjeta", placeholder="4000 1234 5678 9010", key="reg_card_h")
-        with col_p2:
-            exp_tarjeta = st.text_input("Expiración (MM/AA)", placeholder="12/28", key="reg_exp_h")
-        with col_p3:
-            cvv_tarjeta = st.text_input("CVV", type="password", placeholder="123", key="reg_cvv_h")
-        
-        auto_renew_enabled = st.checkbox("🔄 **Activar Renovación Automática Empresarial**", value=True, key="reg_autorenew_h")
-        
-        try:
-            costo_str = plan_elegido.split("-")[1].strip()
-        except Exception:
-            costo_str = "$9,600 MXN"
-        
-        if st.button(f"💳 Pagar {costo_str} y Activar Licencia NutriON", use_container_width=True):
-            db_usuarios = cargar_usuarios_persistentes()
-            if not new_user or not new_email or not new_pass or not num_tarjeta:
-                st.warning("⚠️ Completa todos los campos.")
-            elif new_user in db_usuarios:
-                st.error("⚠️ El usuario ya existe.")
-            elif new_pass != confirm_pass:
-                st.error("⚠️ Las contraseñas no coinciden.")
-            else:
-                dias_periodo = 90 if "Trimestral" in plan_elegido else (180 if "Semestral" in plan_elegido else 365)
-                fecha_renovacion = (datetime.now() + timedelta(days=dias_periodo)).strftime("%Y-%m-%d")
-                db_usuarios[new_user] = {
-                    "password": hash_password(new_pass),
-                    "email": new_email,
-                    "subscription_active": True,
-                    "plan": plan_elegido,
-                    "auto_renew": auto_renew_enabled,
-                    "next_renewal_date": fecha_renovacion,
-                    "fecha_registro": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-                }
-                guardar_usuarios_persistentes(db_usuarios)
-                st.success(f"🎉 **¡Pago Exitoso de {costo_str}!**")
-                st.session_state.authenticated = True
-                st.session_state.current_user = new_user
-                st.balloons()
-                st.rerun()
-
-    st.stop()
-
-# --- 3. ENCABEZADO Y LOGOTIPO HEREFORD ULTRA V4.0 (AUTENTICADO) ---
-db_usuarios_activos = cargar_usuarios_persistentes()
-user_info = db_usuarios_activos.get(st.session_state.current_user, {})
-plan_activo_usuario = user_info.get("plan", "Anual Ultra AI & IoT (12 Meses)")
-auto_renew_status = user_info.get("auto_renew", False)
-next_ren_date = user_info.get("next_renewal_date", "N/A")
-
-st.markdown(f"""
+# --- 3. ENCABEZADO Y LOGOTIPO HEREFORD ULTRA V4.0 ---
+st.markdown("""
     <div style="display: flex; align-items: center; background: linear-gradient(135deg, #ffffff 0%, #fff7ed 50%, #ffedd5 100%); padding: 22px 26px; border-radius: 20px; box-shadow: 0 15px 35px -10px rgba(154, 52, 18, 0.15); margin-bottom: 24px; border: 2px solid #f97316; flex-wrap: wrap; gap: 20px;">
         <div style="flex-shrink: 0; background: linear-gradient(135deg, #ea580c 0%, #c2410c 100%); padding: 14px; border-radius: 16px; display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 20px rgba(154, 52, 18, 0.3); font-size: 2.2rem;">
             🐂🥩
@@ -332,23 +171,7 @@ if "df_ingredientes_hereford" not in st.session_state:
 
 # --- 5. BARRA LATERAL GANADERA ---
 st.sidebar.markdown(f"### 🎛️ Panel Financiero Hereford")
-st.sidebar.markdown(f"👤 **Usuario:** {st.session_state.current_user.capitalize()}")
-
-with st.sidebar.expander("🔄 Gestión de Suscripción", expanded=False):
-    st.markdown(f"**Próxima Renovación:** `{next_ren_date}`")
-    nuevo_estado_auto = st.checkbox("Renovación Automática", value=auto_renew_status, key="sidebar_auto_renew_toggle_h")
-    if nuevo_estado_auto != auto_renew_status:
-        db_all = cargar_usuarios_persistentes()
-        if st.session_state.current_user in db_all:
-            db_all[st.session_state.current_user]["auto_renew"] = nuevo_estado_auto
-            guardar_usuarios_persistentes(db_all)
-            st.success("¡Actualizado!")
-            st.rerun()
-
-if st.sidebar.button("🚪 Cerrar Sesión", use_container_width=True):
-    st.session_state.authenticated = False
-    st.session_state.current_user = ""
-    st.rerun()
+st.sidebar.markdown(f"👤 **Desarrollador:** MVZ Alejandro Castañeda C.")
 
 st.sidebar.markdown("---")
 
