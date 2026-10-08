@@ -143,7 +143,7 @@ st.markdown("""
                 "Tecnolog-IA en tus manos: Finanzas sólidas, empresa rentable y máxima ganancia por kilogramo en cualquier raza."
             </p>
             <p style="margin: 3px 0 2px 0; font-size: 0.88em; color: #1e293b; font-weight: 600; font-family: 'Calibri', sans-serif;">
-                Aplicación creada y desarrollada por el Nutriólogo Veterinario Alejandro Castañeda Correa
+                Desarrollado y creado por Dr. Alejandro Castañeda Correa
             </p>
         </div>
     </div>
@@ -171,8 +171,6 @@ if "df_ingredientes_general" not in st.session_state:
 
 # --- 5. BARRA LATERAL GANADERA ---
 st.sidebar.markdown(f"### 🎛️ Panel de Control & Parámetros")
-st.sidebar.markdown(f"👤 **Desarrollador:** MVZ Alejandro Castañeda C.")
-
 st.sidebar.markdown("---")
 
 with st.sidebar.expander("🐂 1. Parámetros del Hato y Producción", expanded=True):
@@ -245,7 +243,7 @@ class PDFGeneralReport(FPDF):
         self.set_text_color(194, 65, 12)
         self.cell(0, 10, 'NutriON 360 ULTRA V4.0 - Produccion Bovina & Finanzas Ganaderas', 0, 1, 'C')
         self.set_font('Arial', 'I', 9)
-        self.cell(0, 5, 'Desarrollado por el Nutriologo Veterinario Alejandro Castaneda Correa', 0, 1, 'C')
+        self.cell(0, 5, 'Desarrollado y creado por Dr. Alejandro Castaneda Correa', 0, 1, 'C')
         self.ln(3)
 
     def footer(self):
@@ -459,13 +457,13 @@ with tab9:
     
     if st.button("💳 Pagar $475 MXN y Agendar Asesoría con el Dr. Alejandro Castañeda", use_container_width=True):
         if nom_h and mail_h:
-            st.success(f"🎉 **¡Cita Agendada con Éxito!** El Nutriólogo Veterinario Alejandro Castañeda se conectará contigo el {f_cita} a las {h_cita}.")
+            st.success(f"🎉 **¡Cita Agendada con Éxito!** El Dr. Alejandro Castañeda se conectará contigo el {f_cita} a las {h_cita}.")
             st.balloons()
         else:
             st.warning("⚠️ Completa tu nombre y datos de contacto.")
 
 with tab10:
-    st.subheader("📡 Monitoreo de Costos, Insumos y Sanidad")
+    st.subheader("📡 Monitoreo de Costos, insumos y Sanidad")
     st.markdown("""
         **Control Total de la Empresa Ganadera:** Administra con precisión los costos fijos por vientre, 
         evalúa el impacto de la sanidad preventiva y asegura la máxima rentabilidad en tu sistema de producción bovina.
