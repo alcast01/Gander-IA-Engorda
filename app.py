@@ -430,12 +430,12 @@ with tab8:
             with st.chat_message(m["role"]):
                 st.markdown(m["content"])
 
-    q_h = st.chat_input("Escribe tu duda sobre finanzas, nutrición Hereford o costos...")
-    if q_h:
-        st.session_state.nutrion_hereford_messages.append({"role": "user", "content": q_h})
+    user_msg = st.chat_input("Escribe tu duda sobre finanzas, nutrición Hereford o costos...")
+    if user_msg:
+        st.session_state.nutrion_hereford_messages.append({"role": "user", "content": user_msg})
         with st.chat_message("user"):
-            st.markdown(q_h)
-        resp = f"🤖 Recibido: *\"{q_h}\"*. Como asistente **NutriON 360 ULTRA V4.0 Hereford**, he registrado tu consulta para maximizar tus ganancias empresariales."
+            st.markdown(user_msg)
+        resp = f"🤖 Recibido: *\"{user_msg}\"*. Como asistente **NutriON 360 ULTRA V4.0 Hereford**, he registrado tu consulta para maximizar tus ganancias empresariales."
         st.session_state.nutrion_hereford_messages.append({"role": "assistant", "content": resp})
         with st.chat_message("assistant"):
             st.markdown(resp)
