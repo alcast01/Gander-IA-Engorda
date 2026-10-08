@@ -1,6 +1,6 @@
 streamlit
-pandas
 numpy
+pandas
 scipy
 plotly
-fpdf2
+fpdf
