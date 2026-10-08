@@ -170,7 +170,7 @@ if "df_ingredientes_hereford" not in st.session_state:
     })
 
 # --- 5. BARRA LATERAL GANADERA ---
-st.sidebar.markdown(f"### 🎛️ Panel Financiero Hereford")
+st.sidebar.markdown(f"### 🎛️ Panel de Control & Parámetros")
 st.sidebar.markdown(f"👤 **Desarrollador:** MVZ Alejandro Castañeda C.")
 
 st.sidebar.markdown("---")
