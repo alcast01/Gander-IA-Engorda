@@ -430,4 +430,43 @@ with tab8:
             with st.chat_message(m["role"]):
                 st.markdown(m["content"])
 
-    if q_h := st
+    q_h = st.chat_input("Escribe tu duda sobre finanzas, nutrición Hereford o costos...")
+    if q_h:
+        st.session_state.nutrion_hereford_messages.append({"role": "user", "content": q_h})
+        with st.chat_message("user"):
+            st.markdown(q_h)
+        resp = f"🤖 Recibido: *\"{q_h}\"*. Como asistente **NutriON 360 ULTRA V4.0 Hereford**, he registrado tu consulta para maximizar tus ganancias empresariales."
+        st.session_state.nutrion_hereford_messages.append({"role": "assistant", "content": resp})
+        with st.chat_message("assistant"):
+            st.markdown(resp)
+
+with tab9:
+    st.subheader("🧭 Centro de Asesoría Empresarial con el Especialista")
+    col_c1, col_c2 = st.columns(2)
+    with col_c1:
+        nom_h = st.text_input("Productor / Propietario", key="h_nom")
+        ran_h = st.text_input("Nombre del Rancho / Empresa", key="h_ran")
+        mail_h = st.text_input("Correo o Teléfono de Contacto", key="h_mail")
+    with col_c2:
+        mot_h = st.selectbox("Objetivo de Asesoría", [
+            "Optimización de Costos y Márgenes de Ganancia en Hato",
+            "Nutrición de Vientres en Época Crítica / Seca",
+            "Programa Genético Hereford y Destete Precoz",
+            "Auditoría Financiera y Empresa Ganadera"
+        ], key="h_mot")
+        f_cita = st.date_input("Fecha Preferida", min_value=datetime.now().date(), key="h_fec")
+        h_cita = st.selectbox("Horario", ["09:00 AM", "11:00 AM", "01:00 PM", "04:00 PM"], key="h_hor")
+    
+    if st.button("💳 Pagar $475 MXN y Agendar Asesoría con el Dr. Alejandro Castañeda", use_container_width=True):
+        if nom_h and mail_h:
+            st.success(f"🎉 **¡Cita Agendada con Éxito!** El Nutriólogo Veterinario Alejandro Castañeda se conectará contigo el {f_cita} a las {h_cita}.")
+            st.balloons()
+        else:
+            st.warning("⚠️ Completa tu nombre y datos de contacto.")
+
+with tab10:
+    st.subheader("📡 Monitoreo de Costos, Insumos y Sanidad")
+    st.markdown("""
+        **Control Total de la Empresa Ganadera:** Administra con precisión los costos fijos por vientre, 
+        evalúa el impacto de la sanidad preventiva y asegura la máxima rentabilidad en tu sistema vaca-becerro.
+    """)
