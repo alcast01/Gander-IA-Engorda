@@ -9,7 +9,7 @@ from datetime import datetime
 
 # --- 1. CONFIGURACIÓN DE PÁGINA Y DISEÑO SaaS (CALIBRI & UI/UX ULTRA V4.0) ---
 st.set_page_config(
-    page_title="NutriON 360 ULTRA V4.0 | Hereford & Finanzas Ganaderas",
+    page_title="NutriON 360 ULTRA V4.0 | Producción Bovina & Finanzas Ganaderas",
     page_icon="🐂",
     layout="centered",
     initial_sidebar_state="expanded"
@@ -124,12 +124,12 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # --- 2. INICIALIZACIÓN DE ESTADOS DE CHAT ---
-if "nutrion_hereford_messages" not in st.session_state:
-    st.session_state.nutrion_hereford_messages = [
-        {"role": "assistant", "content": "¡Hola! Soy **NutriON 360 ULTRA V4.0**, tu asistente virtual especializado en genética Hereford, finanzas empresariales y nutrición de precisión. ¿Cómo podemos optimizar la rentabilidad y ganancias de tu hato hoy?"}
+if "nutrion_general_messages" not in st.session_state:
+    st.session_state.nutrion_general_messages = [
+        {"role": "assistant", "content": "¡Hola! Soy **NutriON 360 ULTRA V4.0**, tu asistente virtual especializado en nutrición de precisión, genética multirraza y finanzas empresariales para ganado de carne. ¿Cómo podemos optimizar la rentabilidad de tu hato hoy?"}
     ]
 
-# --- 3. ENCABEZADO Y LOGOTIPO HEREFORD ULTRA V4.0 ---
+# --- 3. ENCABEZADO Y LOGOTIPO GENERAL (ULTRA V4.0) ---
 st.markdown("""
     <div style="display: flex; align-items: center; background: linear-gradient(135deg, #ffffff 0%, #fff7ed 50%, #ffedd5 100%); padding: 22px 26px; border-radius: 20px; box-shadow: 0 15px 35px -10px rgba(154, 52, 18, 0.15); margin-bottom: 24px; border: 2px solid #f97316; flex-wrap: wrap; gap: 20px;">
         <div style="flex-shrink: 0; background: linear-gradient(135deg, #ea580c 0%, #c2410c 100%); padding: 14px; border-radius: 16px; display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 20px rgba(154, 52, 18, 0.3); font-size: 2.2rem;">
@@ -137,10 +137,10 @@ st.markdown("""
         </div>
         <div style="flex-grow: 1; min-width: 240px;">
             <h1 style="margin: 0; font-size: 1.8em; color: #7c2d12; letter-spacing: -0.8px; font-weight: 800; font-family: 'Calibri', sans-serif;">
-                NutriON 360 <span style="background: linear-gradient(135deg, #ea580c, #c2410c); color: #ffffff; padding: 3px 10px; border-radius: 8px; font-size: 0.5em; vertical-align: middle; font-weight: 700; letter-spacing: 0.8px; box-shadow: 0 4px 10px rgba(154,52,18,0.3);">ULTRA V4.0 • BECERRO HEREFORD</span>
+                NutriON 360 <span style="background: linear-gradient(135deg, #ea580c, #c2410c); color: #ffffff; padding: 3px 10px; border-radius: 8px; font-size: 0.5em; vertical-align: middle; font-weight: 700; letter-spacing: 0.8px; box-shadow: 0 4px 10px rgba(154,52,18,0.3);">ULTRA V4.0 • MULTIRRAZA & PRODUCCIÓN</span>
             </h1>
             <p style="margin: 2px 0 2px 0; font-size: 0.85em; color: #c2410c; font-weight: 700; font-family: 'Calibri', sans-serif;">
-                "Tecnolog-IA en tus manos: Finanzas sólidas, empresa rentable y máxima ganancia por kilogramo."
+                "Tecnolog-IA en tus manos: Finanzas sólidas, empresa rentable y máxima ganancia por kilogramo en cualquier raza."
             </p>
             <p style="margin: 3px 0 2px 0; font-size: 0.88em; color: #1e293b; font-weight: 600; font-family: 'Calibri', sans-serif;">
                 Aplicación creada y desarrollada por el Nutriólogo Veterinario Alejandro Castañeda Correa
@@ -149,13 +149,13 @@ st.markdown("""
     </div>
 """, unsafe_allow_html=True)
 
-# --- 4. BASE DE DATOS INICIAL DE INGREDIENTES (SISTEMA VACA-BECERRO) ---
-if "df_ingredientes_hereford" not in st.session_state:
-    st.session_state.df_ingredientes_hereford = pd.DataFrame({
+# --- 4. BASE DE DATOS INICIAL DE INGREDIENTES (GENERAL / MULTIRRAZA) ---
+if "df_ingredientes_general" not in st.session_state:
+    st.session_state.df_ingredientes_general = pd.DataFrame({
         "Nombre del Ingrediente": [
             "Ensilado de maiz", "Heno de zacate Buffel / Pasto nativo", "Harina de soya", 
             "Grano de maiz molido", "Pasta de canola", "Melaza de caña", 
-            "Sal mineralizada 12% P", "Urea ganadera", "Núcleo Becerro Engorda", "Grasa sobrepaso"
+            "Sal mineralizada 12% P", "Urea ganadera", "Núcleo Producción Bovina", "Grasa sobrepaso"
         ],
         "Categoria": ["Forraje Húmedo", "Forraje Seco", "Suplemento Proteico", "Grano Energético", "Suplemento Proteico", "Subproducto Energético", "Suplemento Mineral", "Fuente No Proteica", "Suplemento Mineral", "Suplemento Energético"],
         "Disponible": [True, True, True, True, True, True, True, True, True, True],
@@ -175,38 +175,38 @@ st.sidebar.markdown(f"👤 **Desarrollador:** MVZ Alejandro Castañeda C.")
 
 st.sidebar.markdown("---")
 
-with st.sidebar.expander("🐂 1. Parámetros del Hato Hereford", expanded=True):
+with st.sidebar.expander("🐂 1. Parámetros del Hato y Producción", expanded=True):
     num_vientres = st.number_input("Número de Vientres en el Hato", min_value=1, max_value=5000, value=100, step=10)
-    peso_destete_meta = st.slider("Peso Objetivo al Destete (kg)", min_value=180.0, max_value=300.0, value=230.0, step=5.0)
+    peso_destete_meta = st.slider("Peso Objetivo al Destete / Venta (kg)", min_value=180.0, max_value=350.0, value=230.0, step=5.0)
     porcentaje_destete = st.slider("Porcentaje de Destete Esperado (%)", min_value=60.0, max_value=95.0, value=85.0, step=1.0)
-    precio_venta_kg = st.number_input("Precio de Venta Becerro Destetado (MXN/kg)", min_value=30.0, max_value=100.0, value=65.0, step=1.0)
+    precio_venta_kg = st.number_input("Precio de Venta Ganado (MXN/kg)", min_value=30.0, max_value=100.0, value=65.0, step=1.0)
 
 with st.sidebar.expander("💰 2. Costos Operativos y Empresa", expanded=False):
-    costo_operativo_vaca_ano = st.number_input("Costo Anual por Vaca Madre (MXN/año)", min_value=1000.0, max_value=15000.0, value=6500.0, step=250.0)
+    costo_operativo_vaca_ano = st.number_input("Costo Anual por Vientre / Madre (MXN/año)", min_value=1000.0, max_value=15000.0, value=6500.0, step=250.0)
     inversion_sanidad_lote = st.number_input("Sanidad y Vacunación por Cabeza (MXN)", min_value=50.0, max_value=1000.0, value=350.0, step=25.0)
 
 with st.sidebar.expander("🌾 3. Alimentación y Ganancia", expanded=False):
-    ganancia_diaria_esperada = st.slider("GDP Esperada Becerro (kg/día)", min_value=0.6, max_value=1.5, value=0.95, step=0.05)
+    ganancia_diaria_esperada = st.slider("GDP Esperada (kg/día)", min_value=0.6, max_value=1.5, value=0.95, step=0.05)
     consumo_ms_pct_peso = st.slider("Consumo Materia Seca (% del Peso Vivo)", min_value=1.8, max_value=3.2, value=2.5, step=0.1)
 
 # --- EXTRACCIÓN DE DATOS DE INGREDIENTES ---
-df_base_h = st.session_state.df_ingredientes_hereford
+df_base_gen = st.session_state.df_ingredientes_general
 
 try:
-    nombres_h = df_base_h["Nombre del Ingrediente"].astype(str).values
-    c_h = df_base_h["Precio Estimado (MXN/ton)"].astype(float).values
-    pc_h = df_base_h["Proteina Cruda (PC % MS)"].astype(float).values / 100.0  
-    eng_h = df_base_h["Energia Neta Ganancia (ENg Mcal/kg)"].astype(float).values
-    fnd_h = df_base_h["FND (% MS)"].astype(float).values / 100.0
-    ca_h = df_base_h["Calcio (Ca %)"].astype(float).values / 100.0
-    p_h = df_base_h["Fosforo (P %)"].astype(float).values / 100.0
-    disponibles_h = df_base_h["Disponible"].astype(bool).values
+    nombres_h = df_base_gen["Nombre del Ingrediente"].astype(str).values
+    c_h = df_base_gen["Precio Estimado (MXN/ton)"].astype(float).values
+    pc_h = df_base_gen["Proteina Cruda (PC % MS)"].astype(float).values / 100.0  
+    eng_h = df_base_gen["Energia Neta Ganancia (ENg Mcal/kg)"].astype(float).values
+    fnd_h = df_base_gen["FND (% MS)"].astype(float).values / 100.0
+    ca_h = df_base_gen["Calcio (Ca %)"].astype(float).values / 100.0
+    p_h = df_base_gen["Fosforo (P %)"].astype(float).values / 100.0
+    disponibles_h = df_base_gen["Disponible"].astype(bool).values
 except KeyError as err:
     st.error(f"Falta columna clave en ingredientes: {err}")
     st.stop()
 
 bounds_h = []
-for idx, row in df_base_h.iterrows():
+for idx, row in df_base_gen.iterrows():
     if not row["Disponible"]:
         bounds_h.append((0.0, 0.0))
     else:
@@ -238,12 +238,12 @@ costos_totales_hato = num_vientres * costo_operativo_vaca_ano
 utilidad_neta_empresarial = ingreso_total_venta - costos_totales_hato
 rentabilidad_sobre_costo = (utilidad_neta_empresarial / costos_totales_hato) * 100 if costos_totales_hato > 0 else 0.0
 
-# --- FUNCIÓN PDF FINANCIERO / VACA-BECERRO ---
-class PDFHerefordReport(FPDF):
+# --- FUNCIÓN PDF FINANCIERO / PRODUCCIÓN ---
+class PDFGeneralReport(FPDF):
     def header(self):
         self.set_font('Arial', 'B', 12)
         self.set_text_color(194, 65, 12)
-        self.cell(0, 10, 'NutriON 360 ULTRA V4.0 - Becerro Hereford & Finanzas Ganaderas', 0, 1, 'C')
+        self.cell(0, 10, 'NutriON 360 ULTRA V4.0 - Produccion Bovina & Finanzas Ganaderas', 0, 1, 'C')
         self.set_font('Arial', 'I', 9)
         self.cell(0, 5, 'Desarrollado por el Nutriologo Veterinario Alejandro Castaneda Correa', 0, 1, 'C')
         self.ln(3)
@@ -254,22 +254,22 @@ class PDFHerefordReport(FPDF):
         self.set_text_color(100, 100, 100)
         self.cell(0, 10, f'Pagina {self.page_no()} | Tecnolog-IA en tus manos', 0, 0, 'C')
 
-def generar_pdf_hereford():
-    pdf = PDFHerefordReport()
+def generar_pdf_general():
+    pdf = PDFGeneralReport()
     pdf.add_page()
     def safe_str(txt):
         return str(txt).encode('latin-1', 'replace').decode('latin-1')
 
     pdf.set_font('Arial', 'B', 11)
     pdf.set_text_color(67, 20, 7)
-    pdf.cell(0, 8, safe_str("1. Resumen Zootecnico del Hato Hereford"), 0, 1)
+    pdf.cell(0, 8, safe_str("1. Resumen Zootecnico y Productivo del Hato"), 0, 1)
     pdf.set_font('Arial', '', 10)
     
     res = {
         "Vientres en Reproduccion": f"{num_vientres} cabezas",
-        "Porcentaje de Destete": f"{porcentaje_destete}%",
-        "Becerros Destetados Anuales": f"{becerros_destetados_total} cabezas",
-        "Peso Promedio Destete": f"{peso_destete_meta} kg",
+        "Porcentaje de Destete / Produccion": f"{porcentaje_destete}%",
+        "Crias / Ganado Comercializado Anual": f"{becerros_destetados_total} cabezas",
+        "Peso Promedio Comercializacion": f"{peso_destete_meta} kg",
         "GDP Esperada": f"{ganancia_diaria_esperada} kg/dia"
     }
     for k, v in res.items():
@@ -282,7 +282,7 @@ def generar_pdf_hereford():
     pdf.set_font('Arial', '', 10)
     
     econ = {
-        "Ingreso Total por Venta de Becerros": f"${ingreso_total_venta:,.2f} MXN",
+        "Ingreso Total por Venta de Ganado": f"${ingreso_total_venta:,.2f} MXN",
         "Costo Operativo Total del Hato": f"${costos_totales_hato:,.2f} MXN",
         "Utilidad Neta Empresarial": f"${utilidad_neta_empresarial:,.2f} MXN",
         "Rentabilidad sobre Inversion": f"{rentabilidad_sobre_costo:.1f}%",
@@ -298,9 +298,9 @@ def generar_pdf_hereford():
 # --- 6. PESTAÑAS DE LA APLICACIÓN (10 TABS) ---
 tab1, tab2, tab3, tab4, tab5, tab6, tab7, tab8, tab9, tab10 = st.tabs([
     "📋 1. Panel & Empresa",
-    "🧪 2. Nutrición Becerro",
+    "🧪 2. Nutrición Zootécnica",
     "📊 3. Finanzas & Ganancias",
-    "🐂 4. Genética Hereford",
+    "🐂 4. Genética & Eficiencia",
     "🚜 5. Raciones TMR",
     "🔮 6. Proyección Venta",
     "📄 7. Reporte PDF",
@@ -310,8 +310,8 @@ tab1, tab2, tab3, tab4, tab5, tab6, tab7, tab8, tab9, tab10 = st.tabs([
 ])
 
 with tab1:
-    st.subheader("Indicadores Clave del Sistema Vaca-Becerro")
-    st.markdown(f"Evaluación empresarial para **{num_vientres} vientres** | Destete estimado: **{becerros_destetados_total} becerros**")
+    st.subheader("Indicadores Clave del Sistema de Producción Bovina")
+    st.markdown(f"Evaluación empresarial para **{num_vientres} vientres** | Lote comercial estimado: **{becerros_destetados_total} cabezas**")
     
     col1, col2, col3 = st.columns(3)
     with col1:
@@ -321,26 +321,26 @@ with tab1:
         st.metric("Ingreso por Venta", f"${ingreso_total_venta:,.0f} MXN", "Facturación Bruta")
         st.metric("Costo Total Operativo", f"${costos_totales_hato:,.0f} MXN", "Inversión Anual")
     with col3:
-        st.metric("Peso Destete Objetivo", f"{peso_destete_meta} kg")
+        st.metric("Peso Objetivo Meta", f"{peso_destete_meta} kg")
         st.metric("Precio Venta / kg", f"${precio_venta_kg:,.2f} MXN")
 
     st.markdown("---")
     st.subheader("📈 Proyección Financiera de Ganancias por Kilogramo")
     
-    pesos_sim = [180, 200, 220, 240, 260, 280, 300]
+    pesos_sim = [180, 200, 220, 240, 260, 280, 300, 325, 350]
     ingresos_sim = [p * becerros_destetados_total * precio_venta_kg for p in pesos_sim]
     
-    fig_fin = px.line(x=pesos_sim, y=ingresos_sim, markers=True, labels={"x": "Peso al Destete (kg)", "y": "Ingreso Bruto Total (MXN)"}, title="Ingreso Bruto según Peso Objetivo al Destete")
+    fig_fin = px.line(x=pesos_sim, y=ingresos_sim, markers=True, labels={"x": "Peso Objetivo (kg)", "y": "Ingreso Bruto Total (MXN)"}, title="Ingreso Bruto según Peso Objetivo al Destete / Venta")
     fig_fin.update_traces(line_color="#ea580c", line_width=3)
     fig_fin.update_layout(plot_bgcolor="#ffffff", paper_bgcolor="#ffffff", font=dict(family="Calibri", size=12))
     st.plotly_chart(fig_fin, use_container_width=True)
 
 with tab2:
-    st.subheader("🧪 Formulación de Ración y Requerimientos para Becerro Hereford")
-    st.markdown("Ajusta ingredientes, costos y restricciones para garantizar el máximo desarrollo muscular y eficiencia al destete.")
+    st.subheader("🧪 Formulación de Ración y Requerimientos Nutricionales (Multirraza)")
+    st.markdown("Ajusta ingredientes, costos y restricciones para garantizar el máximo desarrollo y eficiencia en cualquier raza o cruza.")
     
-    st.session_state.df_ingredientes_hereford = st.data_editor(
-        st.session_state.df_ingredientes_hereford,
+    st.session_state.df_ingredientes_general = st.data_editor(
+        st.session_state.df_ingredientes_general,
         num_rows="dynamic",
         use_container_width=True,
         column_config={
@@ -348,7 +348,7 @@ with tab2:
             "Min Inclusión (%)": st.column_config.NumberColumn("Min (%)", min_value=0.0, max_value=100.0, step=0.5),
             "Max Inclusión (%)": st.column_config.NumberColumn("Max (%)", min_value=0.0, max_value=100.0, step=0.5),
         },
-        key="editor_ingredientes_hereford_persisted"
+        key="editor_ingredientes_general_persisted"
     )
 
 with tab3:
@@ -363,13 +363,13 @@ with tab3:
             st.metric("Rentabilidad", f"{rentabilidad_sobre_costo:.1f}%")
         with col_e3:
             st.metric("Costo Dieta Ton", f"${costo_ton_dieta:,.2f}")
-            st.metric("Becerros Destete", f"{becerros_destetados_total} cab")
+            st.metric("Lote Comercial", f"{becerros_destetados_total} cab")
         with col_e4:
             st.metric("Estatus Empresa", "🟢 Solvente")
             st.metric("Margen Beneficio", f"{(utilidad_neta_empresarial/ingreso_total_venta)*100:.1f}%" if ingreso_total_venta > 0 else "0%")
 
         st.markdown("---")
-        st.markdown("#### 📋 Dieta Óptima de Costo Mínimo (Becerro):")
+        st.markdown("#### 📋 Dieta Óptima de Costo Mínimo (Multirraza):")
         tabla_dieta = []
         for i, ing in enumerate(nombres_h):
             frac = resultado_h.x[i]
@@ -390,12 +390,12 @@ with tab3:
         st.error("⚠️ Ajusta las restricciones de disponibilidad en la pestaña 2 para hallar solución factible.")
 
 with tab4:
-    st.subheader("🐂 Genética Hereford & Potencial de Ganancia Diaria")
+    st.subheader("🐂 Genética, Eficiencia y Potencial Productivo Multirraza")
     st.markdown("""
-        **Eficiencia Genética Hereford en el Sistema Vaca-Becerro:** La raza Hereford aporta excelente docilidad, 
-        habilidad materna superior y una conversión alimenticia sobresaliente en sistemas de engorda y destete al pastoreo y corral.
+        **Adaptabilidad Multirraza:** Esta plataforma está diseñada para optimizar la nutrición y rentabilidad en cualquier raza 
+        (Angus, Hereford, Charolais, Simmental, Brangus, Brahman y cruzas comerciales), adaptándose a los requerimientos específicos de tu hato.
     """)
-    st.info("💡 **Recomendación Estratégica:** Mantener suplementación mineral de alta disponibilidad para asegurar ganancias superiores a 0.950 kg/día durante la etapa crítica de lactancia y crecimiento.")
+    st.info("💡 **Recomendación Estratégica:** Maximiza la conversión alimenticia y el potencial genético de tu ganado mediante programas estrictos de sanidad y nutrición de precisión.")
 
 with tab5:
     st.subheader("🚜 Control y Mezcla de Raciones TMR / Suplementos")
@@ -412,31 +412,31 @@ with tab6:
 
 with tab7:
     st.subheader("📄 Generación de Reporte Ejecutivo en PDF")
-    pdf_b = generar_pdf_hereford()
+    pdf_b = generar_pdf_general()
     st.download_button(
         label="📥 Descargar Reporte Financiero y Zootécnico en PDF",
         data=pdf_b,
-        file_name="NutriON_360_Ultra_Hereford_Reporte.pdf",
+        file_name="NutriON_360_Ultra_General_Reporte.pdf",
         mime="application/pdf",
         use_container_width=True
     )
     st.success("¡Reporte corporativo listo para descarga!")
 
 with tab8:
-    st.subheader("💬 Asistente Virtual NutriON IA (Vaca-Becerro)")
+    st.subheader("💬 Asistente Virtual NutriON IA (Multirraza)")
     chat_box = st.container()
     with chat_box:
-        for m in st.session_state.nutrion_hereford_messages:
+        for m in st.session_state.nutrion_general_messages:
             with st.chat_message(m["role"]):
                 st.markdown(m["content"])
 
-    user_msg = st.chat_input("Escribe tu duda sobre finanzas, nutrición Hereford o costos...")
+    user_msg = st.chat_input("Escribe tu duda sobre finanzas, nutrición o costos...")
     if user_msg:
-        st.session_state.nutrion_hereford_messages.append({"role": "user", "content": user_msg})
+        st.session_state.nutrion_general_messages.append({"role": "user", "content": user_msg})
         with st.chat_message("user"):
             st.markdown(user_msg)
-        resp = f"🤖 Recibido: *\"{user_msg}\"*. Como asistente **NutriON 360 ULTRA V4.0 Hereford**, he registrado tu consulta para maximizar tus ganancias empresariales."
-        st.session_state.nutrion_hereford_messages.append({"role": "assistant", "content": resp})
+        resp = f"🤖 Recibido: *\"{user_msg}\"*. Como asistente **NutriON 360 ULTRA V4.0**, he registrado tu consulta para maximizar la rentabilidad de tu hato."
+        st.session_state.nutrion_general_messages.append({"role": "assistant", "content": resp})
         with st.chat_message("assistant"):
             st.markdown(resp)
 
@@ -451,7 +451,7 @@ with tab9:
         mot_h = st.selectbox("Objetivo de Asesoría", [
             "Optimización de Costos y Márgenes de Ganancia en Hato",
             "Nutrición de Vientres en Época Crítica / Seca",
-            "Programa Genético Hereford y Destete Precoz",
+            "Programas Genéticos y Eficiencia Reproductiva",
             "Auditoría Financiera y Empresa Ganadera"
         ], key="h_mot")
         f_cita = st.date_input("Fecha Preferida", min_value=datetime.now().date(), key="h_fec")
@@ -468,5 +468,5 @@ with tab10:
     st.subheader("📡 Monitoreo de Costos, Insumos y Sanidad")
     st.markdown("""
         **Control Total de la Empresa Ganadera:** Administra con precisión los costos fijos por vientre, 
-        evalúa el impacto de la sanidad preventiva y asegura la máxima rentabilidad en tu sistema vaca-becerro.
+        evalúa el impacto de la sanidad preventiva y asegura la máxima rentabilidad en tu sistema de producción bovina.
     """)
